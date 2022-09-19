@@ -26,17 +26,17 @@ public class FacultyController {
     }
 
     @PutMapping
-    public Faculty updateEntity (@RequestBody Faculty faculty) {
-        return facultyService.updateFaculty(faculty);
+    public void updateEntity (@RequestBody Faculty faculty) {
+        facultyService.updateFaculty(faculty);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Faculty> deleteEntity (@PathVariable Long id) {
-        return ResponseEntity.of(facultyService.deleteFaculty(id));
+    public void deleteEntity (@PathVariable Long id) {
+        facultyService.deleteFaculty(id);
     }
 
-    @GetMapping("byColor/{color}")
-    public List<Faculty> findAllByColor (@PathVariable("color") String color) {
+    @GetMapping("byColor/")
+    public List<Faculty> findAllByColor (@RequestParam(value = "color", required = false) String color) {
         return facultyService.getByColor(color);
     }
 }

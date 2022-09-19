@@ -1,39 +1,42 @@
 package ru.hogwarts.school.service;
 
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repository.StudentRepository;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class StudentService {
 
-    private final Map<Long, Student> studentMap = new HashMap<>();
-    private long idCount = 0;
+    private final StudentRepository studentRepository;
 
     public Student createStudent (@NotNull Student student) {
-        ++idCount;
-        student.setId(idCount);
-        studentMap.put(idCount, student);
+        studentRepository.save(student);
         return student;
     }
 
     public Optional<Student> getStudent (long id) {
-        return Optional.ofNullable(studentMap.get(id));
+        return studentRepository.findById(id);
     }
 
-    public Student updateStudent (Student student) {
-        studentMap.put(student.getId(), student);
-        return student;
+    public void updateStudent (Student student) {
+        studentRepository.updateStudent(student.getName(), student.getAge(), student.getId());
     }
 
-    public Optional<Student> deleteStudent (Long id) {
-        return Optional.ofNullable(studentMap.remove(id));
+    public void deleteStudent (Long id) {
+        studentRepository.deleteById(id);
     }
 
     public List<Student> getByAge (int age) {
-        return studentMap.values().stream().filter(e -> Objects.equals(e.getAge(), age)).collect(Collectors.toList());
+        return studentRepository.findAll()
+                .stream()
+                .filter(student -> student.getAge() == age)
+                .collect(Collectors.toList());
     }
 }

@@ -26,17 +26,17 @@ public class StudentController {
     }
 
     @PutMapping
-    public Student updateEntity (@RequestBody Student student) {
-        return studentService.updateStudent(student);
+    public void updateEntity (@RequestBody Student student) {
+        studentService.updateStudent(student);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Student> deleteEntity (@PathVariable Long id) {
-        return ResponseEntity.of(studentService.deleteStudent(id));
+    public void deleteEntity (@PathVariable Long id) {
+        studentService.deleteStudent(id);
     }
 
-    @GetMapping("byAge/{age}")
-    public List<Student> findAllByAge (@PathVariable int age) {
+    @GetMapping("byAge/")
+    public List<Student> findAllByAge (@RequestParam(value = "age", required = false) int age) {
         return studentService.getByAge(age);
     }
 }

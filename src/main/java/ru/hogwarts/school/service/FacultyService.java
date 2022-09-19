@@ -1,40 +1,36 @@
 package ru.hogwarts.school.service;
 
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.repository.FacultyRepository;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class FacultyService {
-    private final Map<Long, Faculty> facultyMap = new HashMap<>();
-    long idCount = 0;
+    private final FacultyRepository facultyRepository;
 
     public Faculty createFaculty (@NotNull Faculty faculty) {
-        faculty.setId(++idCount);
-        facultyMap.put(idCount, faculty);
-        return faculty;
+        return facultyRepository.save(faculty);
     }
 
     public Optional<Faculty> getFaculty (Long id) {
-        return Optional.ofNullable(facultyMap.get(id));
+        return facultyRepository.findById(id);
     }
 
-    public Faculty updateFaculty (Faculty faculty) {
-        facultyMap.put(faculty.getId(), faculty);
-        return faculty;
+    public void updateFaculty (Faculty faculty) {
+        facultyRepository.save(faculty);
     }
 
-    public Optional<Faculty> deleteFaculty (Long id) {
-        return Optional.ofNullable(facultyMap.remove(id));
+    public void deleteFaculty (Long id) {
+        facultyRepository.deleteById(id);
     }
 
     public List<Faculty> getByColor (String color) {
-        return facultyMap.values().stream().filter(e -> e.getColor().equals(color)).collect(Collectors.toList());
+        return facultyRepository.findAllByColorIgnoreCase(color);
     }
 }
