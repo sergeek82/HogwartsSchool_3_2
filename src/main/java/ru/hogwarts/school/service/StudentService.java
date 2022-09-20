@@ -8,7 +8,7 @@ import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
@@ -34,9 +34,14 @@ public class StudentService {
     }
 
     public List<Student> getByAge (int age) {
-        return studentRepository.findAll()
-                .stream()
-                .filter(student -> student.getAge() == age)
-                .collect(Collectors.toList());
+        return studentRepository.findAllByAgeContaining(age);
+    }
+
+    public List<Student> getAgeBetween (int min, int max) {
+        return studentRepository.findByAgeBetween(min, max);
+    }
+
+    public Set<Student> getAllByFaculty (long id) {
+        return studentRepository.findStudentsByFaculty_Id(id);
     }
 }

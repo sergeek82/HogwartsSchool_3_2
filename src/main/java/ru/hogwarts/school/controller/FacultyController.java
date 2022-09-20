@@ -20,7 +20,7 @@ public class FacultyController {
         return facultyService.createFaculty(faculty);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Faculty> getEntityById (@PathVariable Long id) {
         return ResponseEntity.of(facultyService.getFaculty(id));
     }
@@ -30,13 +30,23 @@ public class FacultyController {
         facultyService.updateFaculty(faculty);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public void deleteEntity (@PathVariable Long id) {
         facultyService.deleteFaculty(id);
     }
 
-    @GetMapping("byColor/")
-    public List<Faculty> findAllByColor (@RequestParam(value = "color", required = false) String color) {
+    @GetMapping("/byColor")
+    public List<Faculty> findAllByColor (@RequestParam(value = "color") String color) {
         return facultyService.getByColor(color);
+    }
+
+    @GetMapping("/byName")
+    public List<Faculty> findAllByName (@RequestParam(value = "name") String name) {
+        return facultyService.getByName(name);
+    }
+
+    @GetMapping("/byStudentId")
+    public Faculty getFacultyByStudent (@RequestParam(value = "studentId") long id) {
+        return facultyService.findByStudent(id);
     }
 }

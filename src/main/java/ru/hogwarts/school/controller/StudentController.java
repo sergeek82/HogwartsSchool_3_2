@@ -7,6 +7,7 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,8 +36,19 @@ public class StudentController {
         studentService.deleteStudent(id);
     }
 
-    @GetMapping("byAge/")
-    public List<Student> findAllByAge (@RequestParam(value = "age", required = false) int age) {
+    @GetMapping("/byAge")
+    public List<Student> findAllByAge (@RequestParam(value = "age") int age) {
         return studentService.getByAge(age);
+    }
+
+    @GetMapping("/byAgeBetween")
+    public List<Student> findAllEntityWhereAgeBetween (@RequestParam(value = "min") int min,
+                                                       @RequestParam(value = "max") int max) {
+        return studentService.getAgeBetween(min, max);
+    }
+
+    @GetMapping("/byFaculty")
+    public Set<Student> findAllEntityRelatedToFaculty (@RequestParam(value = "facultyId") long facultyId) {
+        return studentService.getAllByFaculty(facultyId);
     }
 }
