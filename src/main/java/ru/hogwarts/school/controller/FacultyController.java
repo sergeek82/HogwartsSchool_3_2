@@ -35,14 +35,10 @@ public class FacultyController {
         facultyService.deleteFaculty(id);
     }
 
-    @GetMapping("/byColor")
-    public List<Faculty> findAllByColor (@RequestParam(value = "color") String color) {
-        return facultyService.getByColor(color);
-    }
-
-    @GetMapping("/byName")
-    public List<Faculty> findAllByName (@RequestParam(value = "name") String name) {
-        return facultyService.getByName(name);
+    @GetMapping("/byNameOrColor")
+    public List<Faculty> findAllByName (@RequestParam(value = "name") String name,
+                                        @RequestParam(value = "color") String color) {
+        return facultyService.getByNameOrColor(name, color);
     }
 
     @GetMapping("/byStudentId")

@@ -30,12 +30,8 @@ public class FacultyService {
         facultyRepository.deleteById(id);
     }
 
-    public List<Faculty> getByColor (String color) {
-        return facultyRepository.findAllByColorIgnoreCase(color);
-    }
-
-    public List<Faculty> getByName (String name) {
-        return facultyRepository.findByNameIgnoreCase(name);
+    public List<Faculty> getByNameOrColor (String name, String color) {
+        return facultyRepository.findAllByNameIgnoreCaseOrColorIgnoreCase(name, color);
     }
 
     public Faculty findByStudent (long studentId) {
