@@ -6,8 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
-import java.util.List;
-import java.util.Set;
+import java.util.Collection;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,34 +20,34 @@ public class StudentController {
         return studentService.createStudent(student);
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<Student> getEntityById (@PathVariable long id) {
-        return ResponseEntity.of(studentService.getStudent(id));
-    }
-
     @PutMapping
     public void updateEntity (@RequestBody Student student) {
-        studentService.updateStudent(student);
+         studentService.updateStudentById(student);
     }
 
-    @DeleteMapping("{id}")
-    public void deleteEntity (@PathVariable Long id) {
+    @DeleteMapping
+    public void deleteEntity (@RequestParam Long id) {
         studentService.deleteStudent(id);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Student> getEntityById (@PathVariable Long id) {
+        return ResponseEntity.of(studentService.getStudent(id));
+    }
+
     @GetMapping("/byAge")
-    public List<Student> findAllByAge (@RequestParam(value = "age") int age) {
+    public Collection<Student> findAllByAge (@RequestParam(value = "age") int age) {
         return studentService.getByAge(age);
     }
 
     @GetMapping("/byAgeBetween")
-    public List<Student> findAllEntityWhereAgeBetween (@RequestParam(value = "min") int min,
-                                                       @RequestParam(value = "max") int max) {
+    public Collection<Student> findAllEntityWhereAgeBetween (@RequestParam(value = "min") int min,
+                                                             @RequestParam(value = "max") int max) {
         return studentService.getAgeBetween(min, max);
     }
 
     @GetMapping("/byFaculty")
-    public Set<Student> findAllEntityRelatedToFaculty (@RequestParam(value = "facultyId") long facultyId) {
+    public Collection<Student> findAllEntityRelatedToFaculty (@RequestParam(value = "facultyId") Long facultyId) {
         return studentService.getAllByFaculty(facultyId);
     }
 }

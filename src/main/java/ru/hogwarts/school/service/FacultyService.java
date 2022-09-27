@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.repository.FacultyRepository;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -30,11 +30,15 @@ public class FacultyService {
         facultyRepository.deleteById(id);
     }
 
-    public List<Faculty> getByNameOrColor (String nameOrColor) {
-        return facultyRepository.findByNameIgnoreCaseOrColorIgnoreCase(nameOrColor,nameOrColor);
+    public Collection<Faculty> findAllByColor (String color) {
+        return facultyRepository.findFacultyByColorContainsIgnoreCase(color);
     }
 
-    public Faculty findByStudent (long studentId) {
-        return facultyRepository.findFacultyByStudentsId(studentId);
+    public Collection<Faculty> findAllByName (String name) {
+        return facultyRepository.findFacultyByNameContainsIgnoreCase(name);
+    }
+
+    public Optional<Faculty> findByStudent (long studentId) {
+        return Optional.ofNullable(facultyRepository.findFacultyByStudentsId(studentId));
     }
 }

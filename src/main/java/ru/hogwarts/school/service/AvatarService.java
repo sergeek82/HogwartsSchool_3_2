@@ -63,7 +63,7 @@ public class AvatarService {
              BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream, 1024);
              ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
             BufferedImage image = ImageIO.read(bufferedInputStream);
-            int height = image.getHeight() / image.getWidth() / 100;
+            int height = image.getHeight() /( image.getWidth() / 100);
             BufferedImage preview = new BufferedImage(100, height, image.getType());
             Graphics2D graphics2D = preview.createGraphics();
             graphics2D.drawImage(image, 0, 0, 100, height, null);

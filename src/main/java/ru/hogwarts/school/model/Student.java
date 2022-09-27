@@ -9,14 +9,16 @@ import javax.persistence.*;
 @Getter
 @Setter
 @EqualsAndHashCode
+@ToString
 @Entity
 public class Student {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @GeneratedValue
+            (strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
-    private int age;
-    @ManyToOne(fetch = FetchType.LAZY)
+    private Integer age;
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "faculty_id")
     private Faculty faculty;
 }
