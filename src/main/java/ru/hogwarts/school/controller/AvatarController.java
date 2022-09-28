@@ -16,15 +16,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/avatarUpload")
+@RequestMapping("/avatar")
 public class AvatarController {
 
     private final AvatarService avatarService;
 
-    @PostMapping(value = "/{studentId}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/{studentId}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadAvatar (@PathVariable Long studentId,
                                                 @RequestParam MultipartFile avatar) throws IOException {
         if (avatar.getSize() > 1024 * 300) {
@@ -34,7 +35,7 @@ public class AvatarController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(value = "/{id}/avatarFromPostgres")
+    @GetMapping(value = "/{id}/downloadFromPostgres")
     public ResponseEntity<byte[]> downloadFromDb (@PathVariable Long id) {
         Avatar avatar = avatarService.getAvatar(id);
         HttpHeaders headers = new HttpHeaders();
@@ -43,7 +44,7 @@ public class AvatarController {
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body(avatar.getData());
     }
 
-    @GetMapping(value = "/{id}/avatarFromDisk")
+    @GetMapping(value = "/{id}/downloadFromDisk")
     public void downloadFromFolder (@PathVariable(value = "id") Long id,
                                     HttpServletResponse response) throws IOException {
         Avatar avatar = avatarService.getAvatar(id);
@@ -55,5 +56,10 @@ public class AvatarController {
             response.setContentLength((int) avatar.getFileSize());
             inputStream.transferTo(outputStream);
         }
+    }
+
+    @GetMapping("/byPage")
+    public Collection<Avatar> findAllByPage (@RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+        return avatarService.getAll(page - 1, size);
     }
 }

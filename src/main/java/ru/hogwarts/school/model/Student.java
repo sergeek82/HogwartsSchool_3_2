@@ -8,13 +8,13 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString
 @Entity
 public class Student {
+    @EqualsAndHashCode.Include
     @Id
-    @GeneratedValue
-            (strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private Integer age;

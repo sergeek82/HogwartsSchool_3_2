@@ -22,7 +22,7 @@ public class StudentController {
 
     @PutMapping
     public void updateEntity (@RequestBody Student student) {
-         studentService.updateStudentById(student);
+        studentService.updateStudentById(student);
     }
 
     @DeleteMapping
@@ -49,5 +49,20 @@ public class StudentController {
     @GetMapping("/byFaculty")
     public Collection<Student> findAllEntityRelatedToFaculty (@RequestParam(value = "facultyId") Long facultyId) {
         return studentService.getAllByFaculty(facultyId);
+    }
+
+    @GetMapping("/amount")
+    public Integer countStudents () {
+        return studentService.getStudentAmount();
+    }
+
+    @GetMapping("/averageAge")
+    public Double getAverageAge () {
+        return studentService.getAverageAge();
+    }
+
+    @GetMapping("/lastFive")
+    public Collection<Student> getLastFiveStudents () {
+        return studentService.getLastFive();
     }
 }

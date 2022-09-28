@@ -2,6 +2,7 @@ package ru.hogwarts.school.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.hogwarts.school.model.Avatar;
@@ -16,6 +17,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Objects;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
@@ -28,6 +30,10 @@ public class AvatarService {
     private final StudentRepository studentRepository;
     @Value("${path.to.avatars}")
     private String avatarDir;
+
+    public Collection<Avatar> getAll (Integer pageNum, Integer pageSize) {
+        return avatarRepository.findAll(PageRequest.of(pageNum, pageSize)).getContent();
+    }
 
     public void uploadAvatar (Long studentId, MultipartFile avatarFile) throws IOException {
         Student student = studentRepository.findById(studentId).orElseThrow();
@@ -63,7 +69,7 @@ public class AvatarService {
              BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream, 1024);
              ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
             BufferedImage image = ImageIO.read(bufferedInputStream);
-            int height = image.getHeight() /( image.getWidth() / 100);
+            int height = image.getHeight() / (image.getWidth() / 100);
             BufferedImage preview = new BufferedImage(100, height, image.getType());
             Graphics2D graphics2D = preview.createGraphics();
             graphics2D.drawImage(image, 0, 0, 100, height, null);
