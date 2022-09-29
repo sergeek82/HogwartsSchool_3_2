@@ -21,4 +21,4 @@ FROM student s
 
 SELECT s.name, s.age, f.name
 FROM student s
-         INNER JOIN faculty f ON f.id = s.faculty_id;
+         FULL OUTER JOIN faculty f ON f.id = s.faculty_id;
