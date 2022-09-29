@@ -18,3 +18,7 @@ CREATE TABLE vehicle
 SELECT s.name, s.age
 FROM student s
          RIGHT JOIN avatar a ON s.id = a.student_id;
+
+SELECT s.name, s.age, f.name
+FROM student s
+         INNER JOIN faculty f ON f.id = s.faculty_id;
