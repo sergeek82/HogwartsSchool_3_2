@@ -1,7 +1,6 @@
 package ru.hogwarts.school.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
@@ -9,9 +8,12 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Optional;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
-import static java.lang.String.*;
+import static java.lang.String.format;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -54,5 +56,21 @@ public class FacultyService {
     public Optional<Faculty> findByStudent (long studentId) {
         log.info(format(PATTERN, "findByStudent({})"), studentId);
         return Optional.ofNullable(facultyRepository.findFacultyByStudentsId(studentId));
+    }
+
+    public String findLongestName () {
+        return facultyRepository.findAll()
+                .stream()
+                .map(Faculty::getName)
+                .max(Comparator.comparing(String::length))
+                .orElse("not found");
+    }
+
+    public Integer returnIntParallel () {
+        return Stream.iterate(1, a -> a + 1).limit(1_000_000).parallel().reduce(0, Integer::sum);
+    }
+
+    public Integer returnInt () {
+        return IntStream.rangeClosed(0, 1_000_000).reduce(0, Integer::sum);
     }
 }

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 //@Profile("!test")  //might be use without properties file
 @RequestMapping("/getPort")
 public class InfoControllerTest {
-    @Value("${server.port}")
+    @Value("${server.port:8080}")
     private String port;
 
     @GetMapping

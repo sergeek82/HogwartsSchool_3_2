@@ -16,6 +16,27 @@ public class FacultyController {
 
     private final FacultyService facultyService;
 
+    @GetMapping("/getInt")
+    public String getInt () {
+        long start = System.currentTimeMillis();
+        Integer notParallel = facultyService.returnInt();
+        long notParallelEnd = System.currentTimeMillis() - start;
+        start = System.currentTimeMillis();
+        Integer parallel = facultyService.returnIntParallel();
+        long parallelEnd = System.currentTimeMillis() - start;
+        return String.format("Output facultyService.returnInt() is: %d  it takes %d%n" +
+                        "Output facultyService.returnIntParallel(); is %d  it takes %d",
+                notParallel,
+                notParallelEnd,
+                parallel,
+                parallelEnd);
+    }
+
+    @GetMapping("/longestName")
+    public String getLongestName () {
+        return facultyService.findLongestName();
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Faculty> getEntityById (@PathVariable Long id) {
         return ResponseEntity.of(facultyService.getFaculty(id));
