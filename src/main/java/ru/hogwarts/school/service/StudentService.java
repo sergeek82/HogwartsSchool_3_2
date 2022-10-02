@@ -8,9 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -74,6 +72,7 @@ public class StudentService {
     }
 
     public Collection<Student> findByNameStartWithA () {
+        log.info("findByNameStartWithA() was invoked");
         return studentRepository.findAll()
                 .stream()
                 .filter(e -> e.getName().startsWith("A"))
@@ -83,6 +82,30 @@ public class StudentService {
     }
 
     public Double findAverageAgeUsingStream () {
+        log.info("findAverageAgeUsingStream() was invoked");
         return studentRepository.findAll().stream().parallel().mapToInt(Student::getAge).average().orElse(0);
+    }
+
+    public void getStudentNamesInThreads () {
+        List<Student> students = studentRepository.findAll();
+        printNames(students);
+    }
+
+    public void getStudentNamesInSynchroThreads () {
+        List<Student> students = studentRepository.findAll();
+        synchronized (Collections.unmodifiableList(students)) {
+            printNames(students);
+        }
+    }
+
+    private void printNames (List<Student> students) {
+        String messageOne = "Print name in 0 thread: {}";
+        String messageTwo = "Print name in 1 thread: {}";
+        String messageTree = "Print name in 2 thread: {}";
+        log.info(messageOne, students.stream().limit(2).map(Student::getName).collect(Collectors.joining(" ")));
+        new Thread(() -> log.info(messageTwo,
+                students.stream().skip(2).limit(2).map(Student::getName).collect(Collectors.joining(" ")))).start();
+        new Thread(() -> log.info(messageTree,
+                students.stream().skip(4).limit(2).map(Student::getName).collect(Collectors.joining(" ")))).start();
     }
 }

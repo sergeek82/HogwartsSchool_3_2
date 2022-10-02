@@ -75,4 +75,14 @@ public class StudentController {
     public Double averageStudentAge () {
         return studentService.findAverageAgeUsingStream();
     }
+
+    @GetMapping("/threads")
+    public void printNamesInDifferentThreads () {
+        studentService.getStudentNamesInThreads();
+    }
+
+    @GetMapping("/synchroThreads")
+    public void printNamesSynchro () {
+        studentService.getStudentNamesInSynchroThreads();
+    }
 }
