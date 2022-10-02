@@ -20,6 +20,9 @@ import static java.lang.String.format;
 public class StudentService {
     private final String PATTERN = "Method %s of Student Service Class was invoked";
     private final StudentRepository studentRepository;
+    private final String MESSAGE_ONE = "Thread 0 name: {} ";
+    private final String MESSAGE_TWO = "Thread 1 name: {} ";
+    private final String MESSAGE_THREE = "Thread 2 name: {} ";
 
     public Student createStudent (@NotNull Student student) {
         log.info(format(PATTERN, "createStudent({})"), student);
@@ -88,24 +91,35 @@ public class StudentService {
 
     public void getStudentNamesInThreads () {
         List<Student> students = studentRepository.findAll();
-        printNames(students);
+        students.stream().limit(2).map(Student::getName).forEach(e -> log.info(MESSAGE_ONE, e));
+        new Thread(() -> students.stream()
+                .skip(2)
+                .limit(2)
+                .map(Student::getName)
+                .forEach(e -> log.info(MESSAGE_TWO, e))).start();
+        new Thread(() -> students.stream()
+                .skip(4)
+                .limit(2)
+                .map(Student::getName)
+                .forEach(e -> log.info(MESSAGE_THREE, e))).start();
     }
 
     public void getStudentNamesInSynchroThreads () {
-        List<Student> students = studentRepository.findAll();
-        synchronized (Collections.unmodifiableList(students)) {
-            printNames(students);
-        }
+        var students = List.copyOf(studentRepository.findAll());
+        printFirstSecond(students);
+        new Thread(() -> printThirdFourth(students)).start();
+        new Thread(() -> printFifthSixth(students)).start();
     }
 
-    private void printNames (List<Student> students) {
-        String messageOne = "Print name in 0 thread: {}";
-        String messageTwo = "Print name in 1 thread: {}";
-        String messageTree = "Print name in 2 thread: {}";
-        log.info(messageOne, students.stream().limit(2).map(Student::getName).collect(Collectors.joining(" ")));
-        new Thread(() -> log.info(messageTwo,
-                students.stream().skip(2).limit(2).map(Student::getName).collect(Collectors.joining(" ")))).start();
-        new Thread(() -> log.info(messageTree,
-                students.stream().skip(4).limit(2).map(Student::getName).collect(Collectors.joining(" ")))).start();
+    private synchronized void printFirstSecond (List<Student> students) {
+        students.stream().limit(2).map(Student::getName).forEach(e -> log.info(MESSAGE_ONE, e));
+    }
+
+    private synchronized void printThirdFourth (List<Student> students) {
+        students.stream().skip(2).limit(2).map(Student::getName).forEach(e -> log.info(MESSAGE_TWO, e));
+    }
+
+    private synchronized void printFifthSixth (List<Student> students) {
+        students.stream().skip(4).limit(2).map(Student::getName).forEach(e -> log.info(MESSAGE_THREE, e));
     }
 }
