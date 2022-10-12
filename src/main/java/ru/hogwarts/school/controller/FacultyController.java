@@ -9,6 +9,9 @@ import ru.hogwarts.school.service.FacultyService;
 import java.util.Collection;
 import java.util.Objects;
 
+/**
+ * Controller to interact with Faculties
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/faculty")
@@ -16,6 +19,9 @@ public class FacultyController {
 
     private final FacultyService facultyService;
 
+    /**
+     * EndPoint to see difference between parallel and not parallel stream
+     */
     @GetMapping("/getInt")
     public String getInt () {
         long start = System.currentTimeMillis();
@@ -32,26 +38,48 @@ public class FacultyController {
                 parallelEnd);
     }
 
+    /**
+     * EndPoint to find the longest name
+     */
     @GetMapping("/longestName")
     public String getLongestName () {
         return facultyService.findLongestName();
     }
 
+    /**
+     * EndPoint to find faculty by id
+     *
+     * @param id faculty id
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Faculty> getEntityById (@PathVariable Long id) {
         return ResponseEntity.of(facultyService.getFaculty(id));
     }
 
+    /**
+     * EndPoint to find faculty by student id
+     *
+     * @param id student id
+     */
     @GetMapping("/byStudentId")
     public ResponseEntity<Faculty> getFacultyByStudent (@RequestParam(value = "studentId") long id) {
         return ResponseEntity.of(facultyService.findByStudent(id));
     }
 
+    /**
+     * saving faculty
+     */
     @PostMapping
     public Faculty addEntity (@RequestBody Faculty faculty) {
         return facultyService.createFaculty(faculty);
     }
 
+    /**
+     * EndPoint to find faculty name or color
+     *
+     * @param name  faculty name
+     * @param color faculty color
+     */
     @GetMapping("/byNameOrColor")
     public ResponseEntity<Collection<Faculty>> findAllByNameOrColor (
             @RequestParam(value = "name", required = false) String name,
@@ -68,11 +96,17 @@ public class FacultyController {
         return ResponseEntity.status(400).build();
     }
 
+    /**
+     * updating faculty
+     */
     @PutMapping
     public void updateEntity (@RequestBody Faculty faculty) {
         facultyService.updateFaculty(faculty);
     }
 
+    /**
+     * deleting faculty
+     */
     @DeleteMapping("/{id}")
     public void deleteEntity (@PathVariable Long id) {
         facultyService.deleteFaculty(id);

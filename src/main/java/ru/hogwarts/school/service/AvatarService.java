@@ -44,23 +44,28 @@ public class AvatarService {
     public void uploadAvatar (Long studentId, MultipartFile avatarFile) {
         log.info(format(PATTERN, "uploadAvatar", SERVICE));
         Student student = studentRepository.findById(studentId).orElseThrow();
+        /*determine storage directory and file name and extension*/
         Path filePath = Path.of(avatarDir,
                 studentId + "." + getExtension(Objects.requireNonNull(avatarFile.getOriginalFilename())));
         try {
             Files.createDirectories(filePath.getParent());
             Files.deleteIfExists(filePath);
+            /*saving to the disk*/
             try (InputStream inputStream = avatarFile.getInputStream();
                  OutputStream outputStream = Files.newOutputStream(filePath, CREATE_NEW);
+                    /*buffering*/
                  BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream, 1024);
                  BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream, 1024)) {
                 bufferedInputStream.transferTo(bufferedOutputStream);
             }
+            /*object preparing*/
             Avatar avatar = getAvatar(studentId);
             avatar.setStudent(student);
             avatar.setFilePath(filePath.toString());
             avatar.setFileSize(avatarFile.getSize());
             avatar.setMediaType(avatarFile.getContentType());
             avatar.setData(prepareAvatar(filePath));
+            /*saving to Postgres*/
             avatarRepository.save(avatar);
         } catch (IOException e) {
             log.error(e.getMessage());
@@ -73,11 +78,13 @@ public class AvatarService {
         return avatarRepository.findByStudentId(id).orElse(new Avatar());
     }
 
+    /**preparing file name*/
     private String getExtension (String filename) {
         log.info(format(PATTERN, "getExtension", SERVICE));
         return filename.substring(filename.lastIndexOf(".") + 1);
     }
 
+    /**converting image size*/
     byte[] prepareAvatar (Path filePath) {
         log.info(format(PATTERN, "prepareAvatar", SERVICE));
         try (InputStream inputStream = Files.newInputStream(filePath);
